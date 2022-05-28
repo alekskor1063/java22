@@ -16,7 +16,13 @@ public class View extends JFrame {
     }
 
     private void initPanel () {
-        panel = new JPanel();
+        panel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawImage(getImage("weather_icon-01"), 45, 15, this);
+            }
+        };
         panel.setPreferredSize(new Dimension(300, 300));
         add(panel);
     }
@@ -28,5 +34,12 @@ public class View extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
         setVisible(true);
+    }
+
+    private Image getImage (String name) {
+        String filename = "/WeatherIcons/" + name.toLowerCase() + ".png";
+        // filename = "/WeatherIcons/weather_icon-01.png";
+        ImageIcon icon = new ImageIcon (getClass().getResource(filename));
+        return icon.getImage();
     }
 }
