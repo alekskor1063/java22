@@ -1,10 +1,11 @@
-package main.java.Controller;
-import main.java.View.View;
-import main.java.Model.Model;
+package Controller;
+import Model.Model;
+import View.View;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 public class Controller implements ActionListener {
     private JButton next;
@@ -23,7 +24,15 @@ public class Controller implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == next){
-            startWarn.setText("City is " + tf.getText());
+            String cityName = tf.getText();
+            startWarn.setText("City is " + cityName);
+            Model model = null;
+            try {
+                model = new Model(cityName);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            startWarn.setText("City is " + cityName + ";\n" + model.desc);
         }
     }
 }
