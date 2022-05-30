@@ -1,10 +1,12 @@
 package View;
 
 import Controller.Controller;
+import Model.Model;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 public class View extends JFrame {
     private JFrame frame;
@@ -13,11 +15,11 @@ public class View extends JFrame {
     public JTextField tf;
     public JLabel startWarn;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         new View();
     }
 
-    public View() {
+    public View() throws IOException {
         frame = new JFrame("Weather");
         next = new JButton(">>");
         prev = new JButton("<<");
@@ -42,6 +44,8 @@ public class View extends JFrame {
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
         frame.setVisible(true);
+        Model model = new Model(1);
+        startWarn.setText("City is " + model.name + ";\n");
     }
 
     /*

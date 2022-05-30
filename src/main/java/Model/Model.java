@@ -8,10 +8,13 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Objects;
 
+import com.sun.source.util.SourcePositions;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONPointer;
 
 public class Model {
     public int code;
@@ -136,6 +139,54 @@ public class Model {
             e.printStackTrace();
         }
     }
+    // конструктор от файла
+    public Model(int rollback) throws IOException {
+        File dir = new File("res/Forecasts/");
+        File[] files = dir.listFiles();
+        int[] fileNames = new int[files.length];
+        String buffer = "";
+        for (int i = 0; i < files.length; i++){
+            buffer = files[i].getName();
+            // System.out.println(buffer.substring(0, buffer.length()-4));
+            fileNames[i] = Integer.parseInt(buffer.substring(0, buffer.length()-4));
+        }
+        Arrays.sort(fileNames);
 
-    // Еще написать: конструктор от файла.
+        // Найти файл
+        String fileName = Integer.toString(fileNames[files.length - 1 - rollback]);
+        // Прочитать его
+        String everything = "";
+        try(BufferedReader br = new BufferedReader(new FileReader("res/Forecasts/" + fileName + ".txt"))) {
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+
+            while (line != null) {
+                sb.append(line);
+                sb.append(System.lineSeparator());
+                line = br.readLine();
+            }
+            everything = sb.toString();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        JSONObject weatherJsonObject = new JSONObject(everything);
+        JSONObject mainArray = weatherJsonObject.getJSONObject("main");
+        JSONArray weatherArrayOne = weatherJsonObject.getJSONArray("weather");
+        JSONObject cloudsArray = weatherJsonObject.getJSONObject("clouds");
+        JSONObject windArray = weatherJsonObject.getJSONObject("wind");
+        this.time = weatherJsonObject.getInt("dt");
+        this.temp = Math.round(mainArray.getFloat("temp"));
+        this.feelsLike = Math.round(mainArray.getFloat("feels_like"));
+        this.pressure = mainArray.getInt("pressure");
+        this.humidity = mainArray.getInt("humidity");
+        JSONObject weatherArray = weatherArrayOne.getJSONObject(0);
+        this.desc = weatherArray.getString("description");
+        this.icon = weatherArray.getString("icon");
+        this.windSpeed = windArray.getFloat("speed");
+        this.windDeg = windArray.getInt("deg"); // градусы
+        this.clouds = cloudsArray.getInt("all"); // проценты облачности
+        this.name = weatherJsonObject.getString("name");
+        this.code = 200;
+    }
 }
