@@ -31,6 +31,7 @@ public class View extends JFrame {
         next.setBounds(220, 230, 60, 30);
         ActionListener actionListener = new Controller(next, prev, tf, startWarn);
         next.addActionListener(actionListener);
+        prev.addActionListener(actionListener);
         tf.setBounds(70, 230, 150, 30);
         prev.setBounds(7, 230, 60, 30);
         frame.add(startWarn);
@@ -44,8 +45,7 @@ public class View extends JFrame {
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
         frame.setVisible(true);
-        Model model = new Model(1);
-        startWarn.setText("City is " + model.name + ";\n");
+        startWarn.setText("Enter your city and press >> to see the weather");
     }
 
     /*

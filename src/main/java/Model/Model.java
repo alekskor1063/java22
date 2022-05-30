@@ -46,7 +46,7 @@ public class Model {
         Path path = FileSystems.getDefault().getPath("res/city.list.json");
         String fileText = Files.readString(path, StandardCharsets.UTF_8);
         JSONArray cities = new JSONArray(fileText);
-        int id = 0;
+        int id = -1;
         JSONObject element = null;
         for (int i = 0; i < cities.length(); i++) {
             element = cities.getJSONObject(i);
@@ -61,7 +61,9 @@ public class Model {
     public Model(String city) throws IOException {
         String appID = "eca546265305d78a307d9477b82d37c9";
 
-        String cityID = Integer.toString(getCode(city));
+        int code = getCode(city);
+
+        String cityID = Integer.toString(code);
         String link = "http://api.openweathermap.org/data/2.5/weather?id="+ cityID + "&lang=ru&units=metric&APPID=" + appID;
 
         URL url = createUrl(link);
@@ -78,12 +80,14 @@ public class Model {
         int status = http.getResponseCode();
 
         this.code = status; // код
+
         System.out.println(status);
         BufferedReader in = null;
         if (status < 299) {
             in = new BufferedReader(new InputStreamReader(http.getInputStream()));
         } else {
             in = new BufferedReader(new InputStreamReader(http.getErrorStream()));
+            throw new IOException("City fault");
         }
         String inputLine;
         StringBuilder content = new StringBuilder();
@@ -153,7 +157,7 @@ public class Model {
         Arrays.sort(fileNames);
 
         // Найти файл
-        String fileName = Integer.toString(fileNames[files.length - 1 - rollback]);
+        String fileName = Integer.toString(fileNames[files.length - 1 + rollback]);
         // Прочитать его
         String everything = "";
         try(BufferedReader br = new BufferedReader(new FileReader("res/Forecasts/" + fileName + ".txt"))) {
