@@ -3,14 +3,21 @@ import Model.Model;
 import View.View;
 import org.json.JSONException;
 
+import javax.imageio.ImageIO;
 import javax.print.attribute.standard.JobKOctets;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
+import java.util.TimeZone;
 
 public class Controller implements ActionListener {
     private JButton next;
@@ -28,9 +35,10 @@ public class Controller implements ActionListener {
     public JLabel wind;
     public JLabel clouds;
     public JLabel place;
+    public JLabel icon;
 
     public Controller(JButton next, JButton prev, JTextField tf, JLabel startWarn, JLabel timeStamp, JLabel characteristic,
-                      JLabel temperature, JLabel feelsLike, JLabel pressure, JLabel wind, JLabel clouds, JLabel humidity, JLabel place){
+                      JLabel temperature, JLabel feelsLike, JLabel pressure, JLabel wind, JLabel clouds, JLabel humidity, JLabel place, JLabel icon){
         this.next = next;
         this.prev = prev;
         this.tf = tf;
@@ -45,6 +53,7 @@ public class Controller implements ActionListener {
         this.wind = wind;
         this.clouds = clouds;
         this.place = place;
+        this.icon = icon;
     }
 
 
@@ -91,7 +100,7 @@ public class Controller implements ActionListener {
                 } else {
                     revert++;
                     model = new Model(revert);
-                    System.out.print(model.time);
+                    //System.out.print(model.time);
                     if (model.time == 2000000000) {
                         hide();
                         startWarn.setText("Insert your city and press >>!");
@@ -119,13 +128,14 @@ public class Controller implements ActionListener {
         wind.setText("");
         clouds.setText("");
         place.setText("");
+        icon.setVisible(false);
     }
 
-    private void printText(Model model) {
+    private void printText(Model model) throws IOException {
         int seco = model.time;
-        Date date = new java.util.Date(seco * 1000L);
-        SimpleDateFormat sdf = new java.text.SimpleDateFormat("z HH:mm:ss dd.MM.yyyy");
-        sdf.setTimeZone(java.util.TimeZone.getTimeZone("GMT+3"));
+        Date date = new Date(seco * 1000L);
+        SimpleDateFormat sdf = new SimpleDateFormat("z HH:mm:ss dd.MM.yyyy");
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT+3"));
         String formattedDate = sdf.format(date);
 
         //if (model.windDeg) {
@@ -140,5 +150,17 @@ public class Controller implements ActionListener {
         pressure.setText("Pressure: " + Integer.toString(model.pressure * 3 / 4) + " mmHg");
         wind.setText("Wind: " + Float.toString(model.windSpeed) + " m/sec"); // + Integer.toString(model.windDeg) + ", "
         clouds.setText("Clouds are filling " + Integer.toString(model.clouds) + "% of sky");
+        String resource = "http://openweathermap.org/img/wn/" + model.icon + "@2x.png";
+        System.out.println(resource);
+        URL url = new URL(resource);
+        URLConnection conn = url.openConnection();
+        InputStream in = conn.getInputStream();
+        BufferedImage img = ImageIO.read(in);
+        assert url != null;
+        ImageIcon icon2 = new ImageIcon(url);
+        icon.setIcon(icon2);
+
+        // icon.setBounds(40, 30, 140, 80);
+        icon.setVisible(true);
     }
 }

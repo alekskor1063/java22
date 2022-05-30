@@ -19,7 +19,7 @@ import org.json.JSONPointer;
 public class Model {
     public int code;
     public String desc;
-    public String icon; // переделать!
+    public String icon;
     public int temp;
     public int feelsLike;
     public int pressure;
@@ -64,7 +64,7 @@ public class Model {
         int code = getCode(city);
 
         String cityID = Integer.toString(code);
-        String link = "http://api.openweathermap.org/data/2.5/weather?id="+ cityID + "&lang=ru&units=metric&APPID=" + appID;
+        String link = "http://api.openweathermap.org/data/2.5/weather?id="+ cityID + "&lang=en&units=metric&APPID=" + appID;
 
         URL url = createUrl(link);
 
@@ -81,7 +81,7 @@ public class Model {
 
         this.code = status; // код
 
-        System.out.println(status);
+        //System.out.println(status);
         BufferedReader in = null;
         if (status < 299) {
             in = new BufferedReader(new InputStreamReader(http.getInputStream()));

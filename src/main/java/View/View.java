@@ -24,6 +24,8 @@ public class View extends JFrame {
     public JLabel clouds;
     public JLabel place;
 
+    public JLabel icon;
+
     public static void main(String[] args) throws IOException {
         new View();
     }
@@ -44,15 +46,17 @@ public class View extends JFrame {
         wind = new JLabel("");
         clouds = new JLabel("");
         place = new JLabel("");
+        icon = new JLabel();
         timeStamp.setBounds(0, 0, 280, 20);
         place.setBounds(0, 0, 280, 60);
         characteristic.setBounds(0, 120, 280, 30);
-        temperature.setBounds(120, 30, 140, 80);
+        temperature.setBounds(110, 30, 140, 80);
         feelsLike.setBounds(0, 100, 280, 30);
         pressure.setBounds(0, 140, 280, 30);
         humidity.setBounds(0, 160, 280, 30);
         wind.setBounds(0, 180, 280, 30);
         clouds.setBounds(0, 200, 280, 30);
+        icon.setBounds(30, 32, 80, 80);
         timeStamp.setHorizontalAlignment(JTextField.CENTER);
         timeStamp.setVerticalAlignment(JTextField.CENTER);
         temperature.setHorizontalAlignment(JTextField.CENTER);
@@ -71,13 +75,15 @@ public class View extends JFrame {
         characteristic.setVerticalAlignment(JTextField.CENTER);
         place.setHorizontalAlignment(JTextField.CENTER);
         place.setVerticalAlignment(JTextField.CENTER);
+        icon.setHorizontalAlignment(JTextField.CENTER);
+        icon.setVerticalAlignment(JTextField.CENTER);
 
         startWarn.setBounds(0, 0, 280, 260);
         startWarn.setHorizontalAlignment(JTextField.CENTER);
         startWarn.setVerticalAlignment(JTextField.CENTER);
         next.setBounds(220, 230, 60, 30);
         ActionListener actionListener = new Controller(next, prev, tf, startWarn, timeStamp,  characteristic, temperature, feelsLike, pressure, wind,
-                clouds, humidity, place);
+                clouds, humidity, place, icon);
         next.addActionListener(actionListener);
         prev.addActionListener(actionListener);
         tf.setBounds(70, 230, 150, 30);
@@ -95,10 +101,12 @@ public class View extends JFrame {
         frame.add(next);
         frame.add(prev);
         frame.add(place);
+        frame.add(icon);
 
         temperature.setFont(new Font("Serif", Font.PLAIN, 64));
         frame.setSize(300, 300);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.getContentPane().setBackground(new Color(128, 192, 255));
         frame.setLayout(null);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
