@@ -32,7 +32,7 @@ public class Controller implements ActionListener {
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
-            startWarn.setText("City is " + cityName + ";\n" + model.desc);
+            startWarn.setText("City is " + cityName + ";\n" + model.name);
         }
     }
 }

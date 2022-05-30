@@ -1,19 +1,18 @@
 package Model;
 
-
-import com.google.gson.Gson;
-
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Objects;
 
-import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -29,6 +28,7 @@ public class Model {
     public int windDeg;
     public int clouds;
     public int time;
+    public String name;
 
 
     public static URL createUrl(String link) {
@@ -40,24 +40,28 @@ public class Model {
         }
     }
 
+    private int getCode(String city) throws IOException {
+
+        // Выцепляем нужный город из файла city.list.json
+        Path path = FileSystems.getDefault().getPath("res/city.list.json");
+        String fileText = Files.readString(path, StandardCharsets.UTF_8);
+        JSONArray cities = new JSONArray(fileText);
+        int id = 0;
+        JSONObject element = null;
+        for (int i = 0; i < cities.length(); i++) {
+            element = cities.getJSONObject(i);
+            if (Objects.equals(element.getString("name"), city)) {
+                id = element.getInt("id");
+            }
+        }
+        return id;
+        // return 524901;
+    }
 
     public Model(String city) throws IOException {
         String appID = "eca546265305d78a307d9477b82d37c9";
-        String cityID = "524901";
 
-
-        // Выцепляем нужный город из файла city.list.json
-        /*
-        Gson gson = new Gson();
-        String fileText = Files.readString(FileSystems.getDefault().getPath("/city.list.json"));
-        CityList[] bigList = gson.fromJson(fileText, CityList[].class);
-
-        for (int i = 0; i < bigList.length; i++){
-            if (Objects.equals(bigList[i].name, city)){
-                cityID = Integer.toString(bigList[i].id);
-            }
-        }
-        */
+        String cityID = Integer.toString(getCode(city));
         String link = "http://api.openweathermap.org/data/2.5/weather?id="+ cityID + "&lang=ru&units=metric&APPID=" + appID;
 
         URL url = createUrl(link);
@@ -108,6 +112,7 @@ public class Model {
             this.windSpeed = windArray.getFloat("speed");
             this.windDeg = windArray.getInt("deg"); // градусы
             this.clouds = cloudsArray.getInt("all"); // проценты облачности
+            this.name = weatherJsonObject.getString("name");
         } else {
             this.desc = (String) resultJson;
         }
