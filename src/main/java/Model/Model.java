@@ -1,9 +1,6 @@
 package Model;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -55,8 +52,8 @@ public class Model {
             }
         }
         return id;
-        // return 524901;
     }
+
 
     public Model(String city) throws IOException {
         String appID = "eca546265305d78a307d9477b82d37c9";
@@ -115,6 +112,28 @@ public class Model {
             this.name = weatherJsonObject.getString("name");
         } else {
             this.desc = (String) resultJson;
+        }
+
+        // Сохранить прогноз в файл
+        try {
+            File myFile = new File ("res/Forecasts/" + time + ".txt");
+            if (myFile.createNewFile()) {
+                System.out.println("File created: " + myFile.getName());
+            } else {
+                System.out.println("File already exists.");
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+        try {
+            FileWriter myWriter = new FileWriter("res/Forecasts/" + time + ".txt");
+            myWriter.write(resultJson);
+            myWriter.close();
+            System.out.println("Successfully wrote to the file.");
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
         }
     }
 
